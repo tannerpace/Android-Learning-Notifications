@@ -131,7 +131,7 @@ private lateinit var navController: NavController
             R.id.action_camera -> {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     val permission = 123
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), PERMISSION_CODE)
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), permission)
                 } else {
                     startCamera()
                 }
