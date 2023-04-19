@@ -27,6 +27,9 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.example.myapp.NOTIFICATION_CLICKED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="myapp" android:host="notification" />
             </intent-filter>
         </activity>
     </application>
