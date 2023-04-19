@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.myapplication.MainActivity">
+    <item
+        android:title="BackGroundNotification"
+        android:checkable="true"
+        android:enabled="true"
+        android:id="@+id/notification_background"
+        android:visible="true"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/action_settings"
+        android:checkable="false"
+        android:enabled="true"
+        android:icon="?android:attr/alertDialogIcon"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_camera"
+        android:checkable="true"
+        android:enabled="true"
+        android:title="Camera"
+        app:showAsAction="ifRoom" />
+
+</menu>
