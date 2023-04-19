@@ -20,10 +20,16 @@ import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NavUtils
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import androidx.navigation.NavDeepLinkBuilder
 import com.example.myapplication.databinding.ActivityMainBinding
+
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,6 +41,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        private const val SECOND_FRAGMENT_ID = R.id.SecondFragment
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun displayNotification() {
@@ -42,9 +52,15 @@ class MainActivity : AppCompatActivity() {
         val notificationChannelId = "MyChannelId"
 
         // Create an intent for the notification to open when clicked
-        val intent = Intent(this, MyActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra(NavUtils.PARENT_ACTIVITY, SECOND_FRAGMENT_ID)
+        }
+        val pendingIntent = NavDeepLinkBuilder(this)
+            .setComponentName(MainActivity::class.java)
+            .setGraph(R.navigation.nav_graph)
+            .setDestination(SECOND_FRAGMENT_ID)
+            .createPendingIntent()
         // Build the notification
         val notificationBuilder = NotificationCompat.Builder(this, notificationChannelId)
             .setSmallIcon(R.drawable.ic_notification)
@@ -74,13 +90,19 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         cameraActivityResultContract.launch(intent)
     }
-
+private lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //check if the activity was launched from a notification click
+        val notificationData = intent.extras?.getString("data")
+    if(notificationData != null && notificationData == "open_second_fragment"){
+    val navToController = findNavController(R.id.nav_host_fragment_content_main)
+    navController.navigate(R.id.action_FirstFragment_to_SecondFragment)
 
+    }
         setSupportActionBar(binding.toolbar)
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -108,7 +130,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_camera -> {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    val PERMISSION_CODE = 123
+                    val permission = 123
                     ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), PERMISSION_CODE)
                 } else {
                     startCamera()
