@@ -122,52 +122,34 @@ private lateinit var navController: NavController
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
+        // Handle item selection
         return when (item.itemId) {
-            R.id.action_settings -> {
-                // Handle settings item click
-                true
-            }
-            R.id.action_camera -> {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    val permission = 123
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), permission)
-                } else {
-                    startCamera()
-                }
-
-                true
-            }
             R.id.notification_background -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    // Create a notification channel for Android Oreo or higher
-                    val name = "My Notification Channel"
-                    val descriptionText = "This is my notification channel"
-                    val importance = NotificationManager.IMPORTANCE_DEFAULT
-                    val channel = NotificationChannel("my_channel_id", name, importance).apply {
-                        description = descriptionText
-                    }
-                    val notificationManager = getSystemService(NotificationManager::class.java)
-                    notificationManager.createNotificationChannel(channel)
+                // Create an intent to open the second fragment
+                val intent = Intent(this, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    putExtra("openFragment", "second") // pass extra information to MainActivity
                 }
+                val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
-                // Create a notification builder
+                // Create a notification builder with the PendingIntent
                 val builder = NotificationCompat.Builder(this, "my_channel_id")
                     .setSmallIcon(R.drawable.ic_notification)
                     .setContentTitle("My Notification")
                     .setContentText("This is a background notification.")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setAutoCancel(true)
+                    .setContentIntent(pendingIntent) // set the PendingIntent to the notification
 
                 // Show the notification
                 val notificationManager = NotificationManagerCompat.from(this)
                 notificationManager.notify(1, builder.build())
-
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 
 
     override fun onSupportNavigateUp(): Boolean {
